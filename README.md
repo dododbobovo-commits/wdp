@@ -19,19 +19,26 @@ Unlike traditional storage, WDP data **must** move to survive.
 ### Architecture Flow
 ```mermaid
 graph TD
-    NodeA[Node A: Carrier] -- "1. Trigger (TTL/Threat)" --> NodeA
-    NodeA -- "2. Transmit Payload" --> Packet(Encrypted Packet)
-    Packet --> NodeB[Node B: Candidate]
-    
-    subgraph Transition Logic
-        NodeB -- "3. Verify Sig" --> Valid{Valid?}
-        Valid -- Yes --> Match{Hash Match?}
-        Match -- Yes --> NodeB
+    %% Этап 1: Исходное состояние
+    subgraph Step1_Origin
+        A[Node A: CARRIER] -- "1. Trigger (Timer or Threat)" --> A
     end
-    
-    NodeB -. "4. Signed ACK" .-> NodeA
-    NodeA -- "5. ATOMIC WIPE" --> EmptyA[Node A: Empty]
-    NodeB --> NewCarrier[Node B: New Carrier]
+
+    %% Этап 2: Передача
+    A -- "2. Send State (Payload + Signature)" --> Packet(Encrypted Data)
+    Packet --> B[Node B: CANDIDATE]
+
+    %% Этап 3: Проверка
+    subgraph Step2_Verification
+        B -- "3. Verify Ed25519 Sig" --> Check{Valid?}
+        Check -- No --> Reject[Reject & Drop]
+        Check -- Yes --> B_Store[Store Data]
+    end
+
+    %% Этап 4: Финал
+    B_Store -. "4. Send ACK" .-> A
+    A -- "5. SECURE WIPE" --> Empty[Node A: EMPTY]
+    B_Store --> NewCarrier[Node B: NEW CARRIER]
 ```
 
 ## ⚙️ Protocol Workflow
@@ -40,33 +47,29 @@ While the "Swarm" handles topology, the individual node migration follows a stri
 ```mermaid
 sequenceDiagram
     autonumber
-    participant A as Node A (Current Carrier)
-    participant B as Node B (Candidate)
-    participant N as Network / Swarm
+    participant A as Node A (Holder)
+    participant B as Node B (Receiver)
 
-    Note over A: State v1.0 (Holding Data)
+    Note over A: Has Data (v1.0)
 
-    A->>A: ⚠️ Trigger (Timer/Threat)
-    A->>N: DHT Lookup (Find Peers)
-    N-->>A: Return: [Node B, Node C...]
+    A->>B: 1. HANDSHAKE_INIT
+    B-->>A: 2. READY + PubKey
+
+    Note right of A: Sign(Payload)
+    A->>B: 3. TRANSMIT_STATE [Data + Sig]
+
+    Note over B: Verify(Hash + Sig)
     
-    A->>B: HANDSHAKE (Prepare Migration)
-    B-->>A: READY (Key Exchange)
-
-    Note right of A: Sign(Payload) using Ed25519
-    A->>B: TRANSMIT STATE [Payload + Signature]
-
-    Note over B: 1. Calculate SHA-256<br/>2. Verify Signature
-    
-    alt Integrity Check PASS
-        B->>B: Store Data
-        B-->>A: ACK_COMMIT (Signed)
-        A->>A: 🗑️ SECURE WIPE (Zero-Copy)
-        Note over A: Node Empty
-        Note over B: State v1.1 (New Carrier)
-    else Integrity Check FAIL
-        B-->>A: REJECT
-        A->>N: Find new Candidate
+    alt Integrity OK
+        B->>B: Write to Memory
+        B-->>A: 4. ACK_COMMIT
+        
+        Note left of A: Wipe Data
+        Note over A: Node A is Empty
+        Note over B: Node B is Carrier
+    else Integrity FAIL
+        B-->>A: ERROR_CORRUPT
+        Note over A: Find new Peer
     end
 ```
 
@@ -114,3 +117,4 @@ This is a Proof-of-Concept. The roadmap for v1.0 includes:
 
 ---
 *Authored by 1102.*
+
