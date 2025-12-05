@@ -1,9 +1,9 @@
 import time
 import random
 import os
-from wdp_migration import Node # Используем твой класс узла
+from wdp_migration import Node
 
-# Цвета для красивого вывода в консоль (работает в VS Code / Powershell)
+# Цвета для красивого вывода в консоль
 GREEN = '\033[92m'
 RED = '\033[91m'
 YELLOW = '\033[93m'
@@ -72,4 +72,5 @@ class SwarmNetwork:
 
 if __name__ == "__main__":
     sim = SwarmNetwork(node_count=20)
+
     sim.start_simulation()
