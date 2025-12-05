@@ -116,5 +116,6 @@ This is a Proof-of-Concept. The roadmap for v1.0 includes:
 - [ ] **Rust Port** for production performance and memory safety
 
 ---
-*Authored by 1102.*
+*Authored by VECTOR (dododbobovo).*
+
 
