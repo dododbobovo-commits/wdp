@@ -1,7 +1,7 @@
 import time
 import random
 from cryptography.hazmat.primitives.asymmetric import ed25519
-from wdp_core import WDPState # Импортируем твое ядро
+from wdp_core import WDPState
 
 class Node:
     def __init__(self, node_id):
@@ -83,4 +83,5 @@ if __name__ == "__main__":
     # 5. Попытка обратной миграции (Ping-Pong)
     if node_beta.storage:
         time.sleep(1)
+
         node_beta.migrate_to(node_alpha)
