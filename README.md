@@ -5,6 +5,8 @@
 > **License:** MIT  
 > **Spec Reference:** Engineering Specification v1.1
 
+(assets/demo.gif)
+
 ## ⚠️ The Problem
 In modern distributed systems, static data is vulnerable. If data resides on a specific server (even in decentralized networks like IPFS), that node becomes a target for censorship, seizure, or physical failure. Static storage = Single Point of Failure.
 
@@ -117,5 +119,6 @@ This is a Proof-of-Concept. The roadmap for v1.0 includes:
 
 ---
 *Authored by VECTOR (dododbobovo).*
+
 
 
