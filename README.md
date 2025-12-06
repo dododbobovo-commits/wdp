@@ -5,6 +5,8 @@
 > **License:** MIT  
 > **Spec Reference:** Engineering Specification v1.1
 
+ps: The Rust implementation is currently under active development in the /dev-rust directory.
+
 ![DEMO](assets/demo.gif)
 
 ## ⚠️ The Problem
@@ -119,6 +121,7 @@ This is a Proof-of-Concept. The roadmap for v1.0 includes:
 
 ---
 *Authored by VECTOR (dododbobovo).*
+
 
 
 
