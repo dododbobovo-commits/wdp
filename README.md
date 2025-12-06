@@ -117,6 +117,8 @@ This is a Proof-of-Concept. The roadmap for v1.0 includes:
 - [ ] DHT Integration (Kademlia) for peer discovery
 - [ ] **Rust Port** for production performance and memory safety
 
+"The Rust implementation is currently under active development in the /dev-rust directory."
+
 ---
 *Authored by VECTOR (dododbobovo).*
 
